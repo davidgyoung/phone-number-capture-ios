@@ -3,6 +3,12 @@
 Ever want to write an iOS app that determines the phone number of the device on which it is running?  Well, it turns
 out you can't, at least not with iOS APIs.
 
+> QUICKSTART: In order to compile and run this app you must set up your own AWS cloud per the instructions below, and supply values for two contstants in the ViewController.swif file:
+AWSQueryEndpointURL 
+AwsPhoneNumber
+Until you supply these values, this problem will not compile and run.
+
+
 ## The Problem
 
 The problem is that Apple disallows iOS apps from accessing the device phone number for privacy reasons.  
