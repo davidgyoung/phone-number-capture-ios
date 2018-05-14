@@ -44,6 +44,7 @@ users to give you their phone number.  But it can make it super easy for users w
 
 The diagram below shows the AWS components that are needed do this for you.  
 
+![architecture](https://raw.githubusercontent.com/davidgyoung/phone-number-capture-ios/master/images/phone_number_capture.png)
 
 Using "AWS Pinpoint" you can request a free 10 digit US phone
 number to receive SMS messages.  Amazon then lets you set up a Simple Notification Service (SNS) "Topic" and configure it to receive all of these
