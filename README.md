@@ -108,22 +108,6 @@ This database table will hold the phone numbers captured
 3. Tap Create
 4. Wait for the table creation to finish. 
 
-### STEP 3a: Create a Second DynamoDB Table
-
-This table will keeps track of all SMS Messages received, so we know how many we have gotten
-in the past 24 hours.  This is useful for preventing the system from triggering too many
-and going over the consumer phone number limit of 200 per day.
-
-
-1. Log in to AWS console
-2. Select Database -> Dyanamo DB
-3. Tap Create Table
-4. Fill out the following fields:
-    Table Name: SmsMessagesReceived
-    Primary Key: ReceivedTimestamp  (String)
-5. Tap Create
-
-
 ### Step 4: Create a new Lambda
 
 This lambda will be responsible for inserting new rows into the database whenever a new
