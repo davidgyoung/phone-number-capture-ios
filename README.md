@@ -50,7 +50,7 @@ users to give you their phone number.  But it can make it super easy for users w
 
 The diagram below shows the AWS components that are needed do this for you.  
 
-![architecture](https://raw.githubusercontent.com/davidgyoung/phone-number-capture-ios/master/images/phone_number_capture.png)
+<img src="images/phone_number_capture.png" alt="architecture" style="width:750px;border-style:solid;border-width:5px;">
 
 Using "AWS Pinpoint" you can request a free 10 digit US phone
 number to receive SMS messages.  Amazon then lets you set up a Simple Notification Service (SNS) "Topic" and configure it to receive all of these
@@ -80,7 +80,8 @@ assigned to your case will be trying to determine if you are a SMS spammer.  You
 you are not.
 3. Wait to get a number assigned.  
 
-Amazon says this can take 5-7 business days, but in my case, I requested it on Friday evening and had it assigned by Tuesday evening.  If you want to move forward before Amazon completes this assignment, and you have access to an Android device, you can use the [free SMS to Amazon SNS forwarder app](https://github.com/davidgyoung/sms2sns) that will let you use your Android device's phone number to forward SMS messages to AWS.
+When I made my request, Amazon said, "Your Dedicated Long Code for US destinations has been moved to the implementation stage. This process can take 2 to 3 weeks. We will send another message when the implementation is complete."
+Wow, that's slow!  Fortunately, they did better in practice.   I requested a number on Friday evening and had it assigned by Tuesday evening.  If you want to move forward before Amazon completes this assignment, and you have access to an Android device, you can use my [free SMS to Amazon SNS forwarder app](https://github.com/davidgyoung/sms2sns) that will let you use your Android device's phone number to forward SMS messages to AWS.
 
 ### Step 2: Make a SNS Topic
 
@@ -96,6 +97,9 @@ see [here](https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-accoun
     Display name: (blank)  
 5. Tap Create 
 
+<img src="images/create_sns_topic.png" alt="create sns topic" style="width:750px;border-style:solid;border-width:5px;">
+
+
 ### STEP 3: Create a new DynamoDB Table
 
 This database table will hold the phone numbers captured
@@ -107,6 +111,9 @@ This database table will hold the phone numbers captured
    primary_key: DeviceUuid
 3. Tap Create
 4. Wait for the table creation to finish. 
+
+<img src="images/create_dynamodb.png" alt="create dynamo db" style="width:750px;border-style:solid;border-width:5px;">
+
 
 ### Step 4: Create a new Lambda
 
@@ -127,9 +134,15 @@ languages.
 
 4. Under Policy Templates, choose “Simple Microservice Permissions”, and "Dynamo DB Full Access"
 5. Tap Create function
+
+ <img src="images/create_lambda.png" alt="create labmda" style="width:750px;border-style:solid;border-width:5px;">
+  
 6. Once the Lambda is created, you’ll be presented with a screen where you can actually paste in the code we want to execute.  Since we have selected Node.js, we can paste a simple code snippet inline that will take the parameters from SNS and insert them into our DynamoDB table we made above.   
  Copy and paste the following code and put it into the code entry field: (Paste code from PhoneNumberCatcher.js)
 7. Once it is there, hit the orange Save button in the upper right.
+
+ <img src="images/lambda_code_edit.png" alt="labmda code edit" style="width:750px;border-style:solid;border-width:5px;">
+
 
 ### Step 5: Hook up SNS to the Lambda
 
@@ -141,11 +154,13 @@ comes from SMS.)
 3. Tap on topics
 4. Check the checkbox next to the phonenumbercatcher topic
 5. Hit the Actions button and choose “Subscribe to topic” 
+  <img src="images/subscribe_to_topic.png" alt="subscribe to topic" style="width:750px;border-style:solid;border-width:5px;">
 6. In the dialog that pops up, choose the following:
    Protocol: AWS Lambda
    Endpoint: phoneNumberCatcher (choose yours from the picklist)
    Version or Alias: default
 7. Tap “Create subscription”
+  <img src="images/subscribe_to_topic2.png" alt="subscribe to topic part 2" style="width:750px;border-style:solid;border-width:5px;">
 
 
 ### Step 6: Test SNS integration with your database
@@ -166,11 +181,16 @@ comes from SMS.)
 
 3. Scroll to the bottom of the screen at tap “Publish Message”.
 
+  <img src="images/topic_test.png" alt="topic test" style="width:750px;border-style:solid;border-width:5px;">
+
+
 If all goes well, this should insert a new row into the DynamoDB.  To check this:
 
 1. Go to https://console.aws.amazon.com
 2. Tap Database -> DynamoDB -> Tables, and select your table from the list
 3. Tap the “Items” tab.  If it worked, you should see one row in the table with the phone number and device uuid.
+
+  <img src="images/database_result.png" alt="database test result" style="width:750px;border-style:solid;border-width:5px;">
 
 ### Troubleshooting
 
@@ -198,8 +218,10 @@ So far, we’ve built something that can take incoming phone numbers and device 
 6. Just like before, once the Lambda is created, you can paste in this code: (Paste code from PhoneNumberQuery.js)
 7. Tap Save
 
+  <img src="images/create_lambda_query.png" alt="create lambda query" style="width:750px;border-style:solid;border-width:5px;">
 
-### Step 8: Crating an API Gateway
+
+### Step 8: Creating an API Gateway
 
 1. Go to https://console.aws.amazon.com/
 2. Select Networking and Content Delivery -> API Gateway
@@ -210,12 +232,18 @@ So far, we’ve built something that can take incoming phone numbers and device 
   Description: (leave blank)
   Endpoint Type: Regional
 5. Tap “Create API”
+
+  <img src="images/create_api_query.png" alt="create api query" style="width:750px;border-style:solid;border-width:5px;">
+
 6. You will see an API editor screen.  Under the “Actions” pull down menu, choose “Create” Method, then in the picklist choose “POST”.  
 7. Update the following fields:
    Integration Type: Lambda
    Lambda: PhoneNumberQuery
    Lambda Proxy Integration: CHECKED
 8. Tap “Save”
+
+  <img src="images/create_post.png" alt="create post" style="width:750px;border-style:solid;border-width:5px;">
+
 9. Using the “Actions” pull-down menu, select Deploy.  In the dialog that pops up, enter:
    
   Deployment stage: [New Stage]
@@ -224,12 +252,18 @@ So far, we’ve built something that can take incoming phone numbers and device 
   Deployment description (leave blank)
    
 10. Tap Deploy
+
+  <img src="images/deploy_api.png" alt="deploy api" style="width:750px;border-style:solid;border-width:5px;">
+
 11. Wait for the spinner to complete.  When done, you’ll see a new stage has been created, and the URL for your resource will be available.  It should give you an invoke URL that looks something like this:
-https://fhayd7hdda.execute-api.us-east-1.amazonaws.com/test
+https://asdfasdfaa.execute-api.us-east-1.amazonaws.com/test
+
+  <img src="images/staging_url.png" alt="staging url" style="width:750px;border-style:solid;border-width:5px;">
+
 
 ### Testing the Lookup API
 
-You can use the `curl` command line tool to test to see if the API works to look up a device by uuid:
+You can use the `curl` command line tool (Mac or Linux, or in Cygwin on Windows) to test to see if the API works to look up a device by uuid:
 
 ```
 $ curl -XPOST  https://bk5d37aund.execute-api.us-east-1.amazonaws.com/test -d '{"device_uuid":"abcd123456"}'
