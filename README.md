@@ -263,10 +263,10 @@ https://asdfasdfaa.execute-api.us-east-1.amazonaws.com/test
 
 ### Testing the Lookup API
 
-You can use the `curl` command line tool (Mac or Linux, or in Cygwin on Windows) to test to see if the API works to look up a device by uuid:
+You can use the `curl` command line tool (Mac or Linux, or in Cygwin on Windows) to test to see if the API works to look up a device by uuid. Before typing the command below, replace teh URL with the URL you were given in the previous step:
 
 ```
-$ curl -XPOST  https://bk5d37aund.execute-api.us-east-1.amazonaws.com/test -d '{"device_uuid":"abcd123456"}'
+$ curl -XPOST  https://REPLACEMEWITHYOURPREFIX.execute-api.us-east-1.amazonaws.com/test -d '{"device_uuid":"abcd123456"}'
 {"device":{"lambda_receive_time":"Mon Apr 30 2018 18:12:16 GMT+0000 (UTC)","sns_publish_time":"2018-04-30T18:11:19.909Z","origination_number":"+1XXX5550100","device_uuid":"abcd123456"}}
 ```
 
